@@ -1,9 +1,4 @@
 ﻿using gt_code_test;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace gt_code_test_tests
 {
