@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using gt_code_test;
+using Microsoft.Extensions.Configuration;
+
 
 
 //FIBONACCI
@@ -82,3 +84,35 @@ while (number == 0)
         number = 0;
     }
 }
+
+
+//PALINDROMES
+var builder = new ConfigurationBuilder();
+builder.SetBasePath(Directory.GetCurrentDirectory())
+       .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+IConfiguration config = builder.Build();
+Console.WriteLine("Checking palindromes");
+try
+{
+    var httpClient = new HttpClient();
+    var palindromeService = new PalindromeService(config, httpClient);
+    var testData = await palindromeService.GetTestData();
+    Console.WriteLine(string.Join(", ", testData));
+    var palindromeResult = palindromeService.FindPalindromes(testData);
+    Console.WriteLine("Palindromes:");
+    Console.WriteLine(string.Join(", ", palindromeResult.Palindromes));
+    Console.WriteLine("Non palindromes");
+    Console.WriteLine(string.Join(", ", palindromeResult.NonPalindromes));
+    Console.WriteLine("Sending result");
+    var isSuccess = await palindromeService.SendResult(palindromeResult);
+    if (isSuccess)
+    {
+        Console.WriteLine("Result sent ok");
+    }
+}
+catch(Exception ex)
+{
+    Console.WriteLine($"Error: {ex.Message}");
+}
+
